@@ -6,6 +6,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        /*
         int m1 = scanner.nextInt();
         int n1 = scanner.nextInt();
         int[][] matrix1 = new int[m1][n1];
@@ -35,6 +37,26 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+         */
+
+        int m1 = scanner.nextInt();
+        int n1 = scanner.nextInt();
+        int[][] matrix1 = new int[m1][n1];
+        for (int i = 0; i < m1; i++) {
+            for (int j = 0; j < n1; j++) {
+                matrix1[i][j] = scanner.nextInt();
+            }
+        }
+        int multiplier = scanner.nextInt();
+
+        int[][] multipliedMatrix = multiplyByNumber(matrix1, multiplier);
+        for (int i = 0; i < m1; i++) {
+            for (int j = 0; j < n1; j++) {
+                System.out.printf("%d ", multipliedMatrix[i][j]);
+            }
+            System.out.println();
+        }
     }
 
     public static int[][] add(int[][] m1, int[][] m2) throws Exception {
@@ -46,6 +68,17 @@ public class Main {
         for (int i = 0; i < m1.length; i++) {
             for (int j = 0; j < m1[0].length; j++) {
                 result[i][j] = m1[i][j] + m2[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    public static int[][] multiplyByNumber(int[][] matrix, int multiplier) {
+        int[][] result = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[i][j] = matrix[i][j] * multiplier;
             }
         }
 
