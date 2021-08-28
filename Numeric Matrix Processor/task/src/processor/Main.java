@@ -25,8 +25,8 @@ public class Main {
                         result = multiplyMatrices();
                         displayResult(result);
                         break;
-                    default:
-                        break;
+                    case 4:
+                        displayResult(transpose());
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -34,12 +34,16 @@ public class Main {
         } while (currentCommand != 0);
     }
 
-    public static int displayMenu() throws Exception {
-        System.out.print("1. Add matrices\n2. Multiply matrix by a constant\n3. Multiply matrices\n0. Exit\n");
+    public static int displayMenu() throws IllegalArgumentException {
+        System.out.print("1. Add matrices\n" +
+                "2. Multiply matrix by a constant\n" +
+                "3. Multiply matrices\n" +
+                "4. Transpose matrix\n" +
+                "0. Exit\n");
         System.out.print("Your choice: ");
         int command = scanner.nextInt();
-        if (command <0 || command > 3) {
-            throw new Exception("Error: no such command");
+        if (command <0 || command > 4) {
+            throw new IllegalArgumentException("Error: no such command");
         }
         return command;
     }
@@ -149,6 +153,94 @@ public class Main {
         }
 
         return result;
+    }
+
+    public static double[][] transpose() {
+        System.out.print("1. Main diagonal\n" +
+                "2. Side diagonal\n" +
+                "3. Vertical line\n" +
+                "4. Horizontal line\n");
+        System.out.print("Your choice: ");
+        int command = scanner.nextInt();
+        if (command < 0 || command > 4) {
+            throw new IllegalArgumentException("Error: no such command");
+        }
+
+        System.out.print("Enter matrix size: ");
+        int m = scanner.nextInt();
+        int n= scanner.nextInt();
+
+        double[][] matrix = new double[m][n];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                matrix[i][j] = scanner.nextDouble();
+            }
+        }
+
+        double[][] result = new double[0][];
+        switch (command) {
+            case 1:
+                result = transposeByMainDiagonal(matrix);
+                break;
+            case 2:
+                result = transposeBySideDiagonal(matrix);
+                break;
+            case 3:
+                result = transposeByVerticalLine(matrix);
+                break;
+            case 4:
+                result = transposeByHorizontalLine(matrix);
+        }
+
+        return result;
+    }
+
+    public static double[][] transposeByMainDiagonal(double[][] matrix) {
+        double[][] result = new double[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[i][j] = matrix[j][i];
+            }
+        }
+
+        return result;
+    }
+
+    public static double[][] transposeBySideDiagonal(double[][] matrix) {
+        double[][] result = new double[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[i][j] = matrix[matrix.length - j - 1][matrix[i].length - i - 1];
+            }
+        }
+
+        return result;
+    }
+
+    public static double[][] transposeByVerticalLine(double[][] matrix) {
+        double temp;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length / 2; j++) {
+                temp = matrix[i][j];
+                matrix[i][j] = matrix[i][matrix[0].length - j - 1];
+                matrix[i][matrix[0].length - j - 1] = temp;
+            }
+        }
+
+        return matrix;
+    }
+
+    public static double[][] transposeByHorizontalLine(double[][] matrix) {
+        double temp;
+        for (int i = 0; i < matrix.length / 2; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                temp = matrix[i][j];
+                matrix[i][j] = matrix[matrix[0].length - i - 1][j];
+                matrix[matrix[0].length - i - 1][j] = temp;
+            }
+        }
+
+        return matrix;
     }
 
     public static void displayResult(double[][] matrix) {
