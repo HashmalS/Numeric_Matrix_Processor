@@ -27,6 +27,11 @@ public class Main {
                         break;
                     case 4:
                         displayResult(transpose());
+                        break;
+                    case 5:
+                        result = readForDeterminant();
+                        double det = determinantOfMatrix(result, result.length);
+                        System.out.printf("The result is:\n%f\n", det);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -39,10 +44,11 @@ public class Main {
                 "2. Multiply matrix by a constant\n" +
                 "3. Multiply matrices\n" +
                 "4. Transpose matrix\n" +
+                "5. Calculate a determinant\n" +
                 "0. Exit\n");
         System.out.print("Your choice: ");
         int command = scanner.nextInt();
-        if (command <0 || command > 4) {
+        if (command <0 || command > 5) {
             throw new IllegalArgumentException("Error: no such command");
         }
         return command;
@@ -241,6 +247,63 @@ public class Main {
         }
 
         return matrix;
+    }
+
+    public static double[][] readForDeterminant() {
+        System.out.print("Enter size of matrix: ");
+        int m1 = scanner.nextInt();
+        int n1 = scanner.nextInt();
+        double[][] matrix = new double[m1][n1];
+        System.out.print("Enter matrix:\n");
+        for (int i = 0; i < m1; i++) {
+            for (int j = 0; j < n1; j++) {
+                matrix[i][j] = scanner.nextDouble();
+            }
+        }
+
+        return matrix;
+    }
+
+    public static double[][] getCofactor(double[][] matrix, int p, int q, int n) {
+        int i = 0;
+        int j = 0;
+        double[][] result = new double[n][n];
+
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < n; col++) {
+                if (row != p && col != q) {
+                    result[i][j++] = matrix[row][col];
+                    if (j == n - 1) {
+                        j = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static double determinantOfMatrix(double[][] matrix, int n) throws IllegalArgumentException {
+        if (matrix.length != matrix[0].length) {
+            throw new IllegalArgumentException("Error: not a square matrix");
+        }
+
+        double determinant = 0;
+
+        if (n == 1) {
+            return matrix[0][0];
+        }
+
+        int sign = 1;
+
+        for (int i = 0; i < n; i++) {
+            double[][] temp = getCofactor(matrix, 0, i, n);
+            determinant += sign * matrix[0][i] * determinantOfMatrix(temp, n - 1);
+            sign = -sign;
+        }
+
+        return determinant;
     }
 
     public static void displayResult(double[][] matrix) {
