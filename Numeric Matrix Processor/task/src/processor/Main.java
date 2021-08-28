@@ -32,6 +32,9 @@ public class Main {
                         result = readForDeterminant();
                         double det = determinantOfMatrix(result, result.length);
                         System.out.printf("The result is:\n%f\n", det);
+                        break;
+                    case 6:
+                        displayResult(inverse(readForDeterminant()));
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -45,10 +48,11 @@ public class Main {
                 "3. Multiply matrices\n" +
                 "4. Transpose matrix\n" +
                 "5. Calculate a determinant\n" +
+                "6. Inverse matrix\n" +
                 "0. Exit\n");
         System.out.print("Your choice: ");
         int command = scanner.nextInt();
-        if (command <0 || command > 5) {
+        if (command <0 || command > 6) {
             throw new IllegalArgumentException("Error: no such command");
         }
         return command;
@@ -304,6 +308,46 @@ public class Main {
         }
 
         return determinant;
+    }
+
+    public static double[][] adjointOfMatrix(double[][] matrix) {
+        if (matrix.length == 1) {
+            return new double[][] {{0.0}};
+        }
+
+        int sign = 1;
+        double[][] temp;
+        double[][] result = new double[matrix.length][matrix.length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                temp = getCofactor(matrix, i, j, matrix.length);
+
+                sign = ((i + j) % 2) == 0 ? 1 : -1;
+
+                result[j][i] = sign * determinantOfMatrix(temp, matrix.length - 1);
+            }
+        }
+
+        return result;
+    }
+
+    public static double[][] inverse(double[][] matrix) throws Exception{
+        double determinant = determinantOfMatrix(matrix, matrix.length);
+        if (determinant == 0) {
+            throw new Exception("This matrix doesn't have an inverse.");
+        }
+
+        double[][] adjoint = adjointOfMatrix(matrix);
+        double[][] result = new double[matrix.length][matrix.length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[i][j] = adjoint[i][j] / determinant;
+            }
+        }
+
+        return result;
     }
 
     public static void displayResult(double[][] matrix) {
